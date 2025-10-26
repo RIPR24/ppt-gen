@@ -24,3 +24,181 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.con {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  flex-direction: row;
+  gap: 30px;
+  padding: 20px;
+}
+
+.chat-con {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  height: 70vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #555555 transparent;
+  min-height: 500px;
+}
+
+/* Base bubble style */
+.chat-bubble {
+  max-width: 70%;
+  padding: 12px 16px;
+  border-radius: 12px;
+  position: relative;
+  font-size: 1.1rem;
+  line-height: 1.4;
+}
+
+/* Left (incoming) bubble */
+.cht-in {
+  align-self: flex-start;
+  background-color: #343434;
+  color: #cccccc;
+}
+
+/* Add the “tail” for left bubble */
+.cht-in::after {
+  content: "";
+  position: absolute;
+  top: 12px;
+  left: -8px;
+  width: 0;
+  height: 0;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  border-right: 8px solid #343434;
+}
+
+/* Right (outgoing) bubble */
+.cht-out {
+  align-self: flex-end;
+  background-color: #007aff;
+  color: #fff;
+}
+
+/* Tail for right bubble */
+.cht-out::after {
+  content: "";
+  position: absolute;
+  top: 12px;
+  right: -8px;
+  width: 0;
+  height: 0;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  border-left: 8px solid #007aff;
+}
+
+.input-con {
+  display: flex;
+  padding: 10px 18px;
+  border-radius: 25px;
+  gap: 8px;
+  background-color: #242424;
+}
+
+.input-con input {
+  flex-grow: 1;
+  font-size: 1.2rem;
+}
+
+.input-con input:focus {
+  outline: none;
+}
+
+.imb {
+  opacity: 0.7;
+  transition: 0.2s;
+  cursor: pointer;
+}
+
+.imb:hover {
+  opacity: 1;
+  scale: 1.02;
+  filter: drop-shadow(0 0 2px #616161);
+}
+
+.chatbox-con {
+  background-color: #1e1e1e;
+  padding: 20px;
+  border-radius: 12px;
+  max-width: 800px;
+  width: 90%;
+  border: 1px solid #5e5e5e;
+}
+
+.preview-con {
+  display: flex;
+  flex-direction: column;
+  width: 550px;
+  overflow-y: auto;
+  height: 70vh;
+  padding: 16px;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-grow: 1;
+}
+
+.preview-item {
+  border: 1px solid #5e5e5e;
+  padding: 30px;
+  background-color: #e7e7e7;
+  height: 500px;
+  width: 500px;
+  color: #1e1e1e;
+  font-size: 10px;
+}
+
+.preview-item h2 {
+  font-weight: 500;
+  font-size: 18px;
+}
+
+.preview-item ul {
+  margin-left: 20px;
+  list-style-type: disc;
+}
+
+button {
+  padding: 10px 20px;
+  background-color: #007aff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #005bb5;
+  scale: 1.02;
+}
+
+@media (max-width: 450px) {
+  .con {
+    flex-direction: column;
+    height: auto;
+    gap: 20px;
+    padding: 20px 0;
+  }
+
+  .preview-con {
+    width: 100%;
+    height: 300px;
+  }
+
+  .preview-item {
+    width: 100%;
+    height: 300px;
+    padding: 20px;
+  }
+}
