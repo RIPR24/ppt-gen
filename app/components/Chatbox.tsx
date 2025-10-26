@@ -14,6 +14,15 @@ type props = {
 const Chatbox = ({ addCht, chts }: props) => {
   const [input, setInput] = useState("");
   const [disabled, setDisabled] = useState(false);
+
+  const enterP = async () => {
+    if (disabled) return;
+    setDisabled(true);
+    await addCht(input);
+    setInput("");
+    setDisabled(false);
+  };
+
   return (
     <div className="chatbox-con">
       <div className="chat-con">
@@ -26,6 +35,12 @@ const Chatbox = ({ addCht, chts }: props) => {
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
+          placeholder={
+            chts.length === 0 ? "Enter the topic" : "Enter further instruction"
+          }
+          onKeyDown={(e) => {
+            if (e.key === "Enter") enterP();
+          }}
         />
         {!disabled && (
           <Image
@@ -34,13 +49,7 @@ const Chatbox = ({ addCht, chts }: props) => {
             alt="send"
             width={30}
             height={30}
-            onClick={async () => {
-              if (disabled) return;
-              setDisabled(true);
-              await addCht(input);
-              setInput("");
-              setDisabled(false);
-            }}
+            onClick={enterP}
           />
         )}
       </div>
