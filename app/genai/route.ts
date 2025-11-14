@@ -8,7 +8,7 @@ const genai = new GoogleGenAI({
 export const POST = async (req: NextRequest) => {
   const { prompt } = await req.json();
   const response = await genai.models.generateContent({
-    model: "gemini-2.5-flash",
+    model: "gemini-2.5-flash-lite",
     contents: {
       text: prompt,
     },

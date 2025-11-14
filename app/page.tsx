@@ -4,6 +4,7 @@ import { useState } from "react";
 import Chatbox from "./components/Chatbox";
 import pptxgen from "pptxgenjs";
 import Preview from "./components/Preview";
+import imgs from "./components/data";
 
 export type chat = {
   id?: number;
@@ -13,7 +14,7 @@ export type chat = {
 
 export type ppt = {
   title: string;
-  imageLink: string;
+  imageLink?: string;
   points: string[];
 };
 
@@ -21,9 +22,11 @@ const page = () => {
   const [chts, setChts] = useState<chat[]>([]);
   const [pre, setPre] = useState<ppt[] | null>(null);
   const [ppt, setPpt] = useState<pptxgen | null>(null);
+  const [title, setTitle] = useState<string>("");
 
   const addCht = async (newCht: string) => {
-    const str = newCht.trim();
+    let str = newCht.trim();
+    str = str.charAt(0).toUpperCase() + str.slice(1);
     if (str.length === 0) return;
     const cht: chat = {
       id: chts.length + 1,
@@ -31,6 +34,7 @@ const page = () => {
       user: true,
     };
     setChts([...chts, cht]);
+    if (!title) setTitle(str);
     const re = await fetch("/genai", {
       method: "POST",
       headers: {
@@ -45,28 +49,53 @@ const page = () => {
     const res = await re.json();
     const arr: ppt[] = JSON.parse(res.text);
     setPre(arr);
-    console.log(res.text);
     setChts((prev) => [
       ...prev,
       {
         id: prev.length + 1,
-        message: "here are the results for " + str,
-        //message: res.text,
+        message: "Here are the results for " + str,
         user: false,
       },
     ]);
+    //console.log(await getImages(newCht,2));
     createPpt(arr);
   };
 
-  const createPpt = (slides: ppt[]) => {
+  const getImages = async (prompts: string, noi: number) => {
+    const re = await fetch("/genaiimg", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        prompt: prompts,
+        noi: noi,
+      }),
+    });
+    const res = await re.json();
+    return res;
+  };
+
+  const createPpt = (slides: ppt[], title?: string) => {
     const pptx = new pptxgen();
+    const frnt = pptx.addSlide();
+    frnt.addText(title ? title : "Generated Presentation", {
+      y: 1.5,
+      w: "100%",
+      align: "center",
+      fontSize: 36,
+      bold: true,
+      color: imgs[0].color,
+    });
     slides.forEach((slide) => {
       const sld = pptx.addSlide();
+      sld.background = { path: imgs[0].url };
       sld.addText(slide.title, {
         x: 1,
         y: 0.8,
         fontSize: slide.title.length > 35 ? 24 : 28,
         bold: true,
+        color: imgs[0].color,
       });
       // sld.addImage({
       //   path: slide.imageLink,
@@ -86,6 +115,7 @@ const page = () => {
         x: 1.2,
         y: longText ? 2 : 2.5,
         fontSize: longText ? 14 : 18,
+        color: imgs[0].color,
       });
     });
     setPpt(pptx);
@@ -100,7 +130,7 @@ const page = () => {
           alignItems: "center",
         }}
       >
-        <Preview data={pre ? pre : []} />
+        <Preview data={pre ? pre : []} title={title} />
         <button
           onClick={() => {
             if (ppt) ppt.writeFile({ fileName: "GeneratedPresentation.pptx" });
