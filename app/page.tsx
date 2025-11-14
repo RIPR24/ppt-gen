@@ -58,7 +58,7 @@ const page = () => {
       },
     ]);
     //console.log(await getImages(newCht,2));
-    createPpt(arr);
+    createPpt(arr, title ? title : str);
   };
 
   const getImages = async (prompts: string, noi: number) => {
@@ -79,6 +79,7 @@ const page = () => {
   const createPpt = (slides: ppt[], title?: string) => {
     const pptx = new pptxgen();
     const frnt = pptx.addSlide();
+    frnt.background = { path: imgs[0].url };
     frnt.addText(title ? title : "Generated Presentation", {
       y: 1.5,
       w: "100%",
